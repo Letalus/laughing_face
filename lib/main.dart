@@ -35,11 +35,84 @@ class LaughingFaceScreen extends StatefulWidget {
 }
 
 class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
+  final _outerEyeColor = const Color(0xFFE8F2FF);
+  final _middleEyeMouthColor = const Color(0xFF68DBFF);
+  final _innerEyeColor = const Color(0xFF00FFFF);
+
+  final _outerEyeWidth = 150.0;
+  final _middleEyeWidth = 110.0;
+  final _innerEyeWidth = 40.0;
+
+  final _eyeToMouthSpace = 80.0;
+  final _mouthHeight = 120.0;
+  final _mouthWidth = 50.0;
+  final _largeMouthRadiusVal = 30.0;
+  final _smallMouthRadiusVal = 10.0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [_eye(), _eye()],
+              ),
+              SizedBox(
+                height: _eyeToMouthSpace,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _outerMouthPiece(BorderRadius.only(
+                      topLeft: Radius.circular(_smallMouthRadiusVal),
+                      topRight: Radius.circular(_smallMouthRadiusVal),
+                      bottomLeft: Radius.circular(_largeMouthRadiusVal))),
+                  Expanded(child: Container(
+                    height: _mouthWidth,
+                    color: _middleEyeMouthColor,
+                  )),
+                  _outerMouthPiece(BorderRadius.only(
+                      topLeft: Radius.circular(_smallMouthRadiusVal),
+                      topRight: Radius.circular(_smallMouthRadiusVal),
+                      bottomRight: Radius.circular(_largeMouthRadiusVal))),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
+  }
+
+  Widget _eye() {
+    return Container(
+      width: _outerEyeWidth,
+      height: _outerEyeWidth,
+      decoration: BoxDecoration(color: _outerEyeColor, shape: BoxShape.circle),
+      alignment: Alignment.center,
+      child: Container(
+        width: _middleEyeWidth,
+        height: _middleEyeWidth,
+        decoration: BoxDecoration(color: _middleEyeMouthColor, shape: BoxShape.circle),
+        alignment: Alignment.center,
+        child: Container(
+          width: _innerEyeWidth,
+          height: _innerEyeWidth,
+          decoration: BoxDecoration(color: _innerEyeColor, shape: BoxShape.circle),
+        ),
+      ),
+    );
+  }
+
+  Widget _outerMouthPiece(BorderRadius borderRadius) {
+    return Container(
+        height: _mouthHeight,
+        width: _mouthWidth,
+        decoration: BoxDecoration(color: _middleEyeMouthColor, borderRadius: borderRadius));
   }
 }
