@@ -38,44 +38,63 @@ class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
   final _largeMouthRadiusVal = 30.0;
   final _smallMouthRadiusVal = 10.0;
 
+  final _eyeMovementRadius = 80.0;
+  Offset _eyeOffsetPercentage = Offset(0.45, 0.45);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [_eye(), _eye()],
-              ),
-              SizedBox(
-                height: _eyeToMouthSpace,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _outerMouthPiece(BorderRadius.only(
-                      topLeft: Radius.circular(_smallMouthRadiusVal),
-                      topRight: Radius.circular(_smallMouthRadiusVal),
-                      bottomLeft: Radius.circular(_largeMouthRadiusVal))),
-                  Expanded(child: Container(
-                    height: _mouthWidth,
-                    color: _middleEyeMouthColor,
-                  )),
-                  _outerMouthPiece(BorderRadius.only(
-                      topLeft: Radius.circular(_smallMouthRadiusVal),
-                      topRight: Radius.circular(_smallMouthRadiusVal),
-                      bottomRight: Radius.circular(_largeMouthRadiusVal))),
-                ],
-              )
-            ],
+    return GestureDetector(
+      onPanUpdate: (details) {
+        onPan(details.globalPosition);
+      },
+      onPanStart: (details) {
+        onPan(details.globalPosition);
+      },
+      child: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [_eye(), _eye()],
+                ),
+                SizedBox(
+                  height: _eyeToMouthSpace,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _outerMouthPiece(BorderRadius.only(
+                        topLeft: Radius.circular(_smallMouthRadiusVal),
+                        topRight: Radius.circular(_smallMouthRadiusVal),
+                        bottomLeft: Radius.circular(_largeMouthRadiusVal))),
+                    Expanded(
+                        child: Container(
+                      height: _mouthWidth,
+                      color: _middleEyeMouthColor,
+                    )),
+                    _outerMouthPiece(BorderRadius.only(
+                        topLeft: Radius.circular(_smallMouthRadiusVal),
+                        topRight: Radius.circular(_smallMouthRadiusVal),
+                        bottomRight: Radius.circular(_largeMouthRadiusVal))),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void onPan(Offset globalPosition) {
+    final screenOffset = Offset(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+    setState(() {
+      _eyeOffsetPercentage = Offset(globalPosition.dx/screenOffset.dx, globalPosition.dy/screenOffset.dy);
+    });
   }
 
   Widget _eye() {
@@ -89,10 +108,21 @@ class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
         height: _middleEyeWidth,
         decoration: BoxDecoration(color: _middleEyeMouthColor, shape: BoxShape.circle),
         alignment: Alignment.center,
-        child: Container(
-          width: _innerEyeWidth,
-          height: _innerEyeWidth,
-          decoration: BoxDecoration(color: _innerEyeColor, shape: BoxShape.circle),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                top: _eyeMovementRadius*_eyeOffsetPercentage.dy,
+                left: _eyeMovementRadius*_eyeOffsetPercentage.dx,
+                child: Container(
+                  width: _innerEyeWidth,
+                  height: _innerEyeWidth,
+                  decoration: BoxDecoration(color: _innerEyeColor, shape: BoxShape.circle),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
