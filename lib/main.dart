@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
 class LaughingFaceScreen extends StatefulWidget {
   const LaughingFaceScreen({super.key});
 
+  static const leftInnerEyeKey = Key('left inner eye key');
+
   @override
   State<LaughingFaceScreen> createState() => _LaughingFaceScreenState();
 }
@@ -39,7 +41,7 @@ class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
   final _smallMouthRadiusVal = 10.0;
 
   final _eyeMovementRadius = 80.0;
-  Offset _eyeOffsetPercentage = Offset(0.45, 0.45);
+  Offset _eyeOffsetPercentage = const Offset(0.45, 0.45);
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +55,13 @@ class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
       child: Scaffold(
         body: Center(
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [_eye(), _eye()],
+                  children: [_eye(key: LaughingFaceScreen.leftInnerEyeKey), _eye()],
                 ),
                 SizedBox(
                   height: _eyeToMouthSpace,
@@ -97,7 +99,7 @@ class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
     });
   }
 
-  Widget _eye() {
+  Widget _eye({Key? key}) {
     return Container(
       width: _outerEyeWidth,
       height: _outerEyeWidth,
@@ -113,6 +115,7 @@ class _LaughingFaceScreenState extends State<LaughingFaceScreen> {
             clipBehavior: Clip.none,
             children: [
               Positioned(
+                key: key,
                 top: _eyeMovementRadius*_eyeOffsetPercentage.dy,
                 left: _eyeMovementRadius*_eyeOffsetPercentage.dx,
                 child: Container(
